@@ -20,7 +20,7 @@ func NewRun(r models.Run) {
 	client := getPQClient()
 	defer client.Close()
 	var lastInsertedID string
-	err := client.QueryRow(`insert into run (id, starttime, endtime, machinename) values ($1,$2,$3,$4) returning id;`, r.ID, r.Start, r.End, r.Machinename).Scan(&lastInsertedID)
+	err := client.QueryRow(`insert into run (runid, starttime, endtime, machinename) values ($1,$2,$3,$4) returning id;`, r.ID, r.Start, r.End, r.Machinename).Scan(&lastInsertedID)
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +31,7 @@ func EndRun(r models.Run) {
 	client := getPQClient()
 	defer client.Close()
 	var lastUpdatedID string
-	err := client.QueryRow(`update run set endtime = $1 where id = $2 returning id;`, r.End, r.ID).Scan(&lastUpdatedID)
+	err := client.QueryRow(`update run set endtime = $1 where runid = $2 returning id;`, r.End, r.ID).Scan(&lastUpdatedID)
 	if err != nil {
 		panic(err)
 	}

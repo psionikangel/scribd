@@ -1,6 +1,7 @@
 
 create table run(
-  id varchar(36) PRIMARY KEY,
+  id serial,
+  runid varchar(100),
   starttime date,
   endtime date,
   machinename text
@@ -14,7 +15,7 @@ create table metadata (
   filename text,
   filesize int,
   extension text,
-  runid varchar(36) references run(id)
+  runid varchar(100) references run(runid)
 );
 
 commit;
