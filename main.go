@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/config", handlers.Confighandler)
+	http.HandleFunc("/run", handlers.RunHandler)
 	http.HandleFunc("/metadata", handlers.MetadataHandler)
 	http.ListenAndServe(":8080", nil)
 }

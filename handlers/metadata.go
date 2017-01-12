@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/psionikangel/scribd/db"
 	"github.com/psionikangel/scribd/models"
 )
 
@@ -16,6 +17,9 @@ func MetadataHandler(w http.ResponseWriter, r *http.Request) {
 		err := dec.Decode(&meta)
 		if err != nil {
 			panic(err)
+		}
+		for _, metadata := range meta {
+			db.AddMetadata(metadata)
 		}
 		js, err := json.Marshal(meta)
 		if err != nil {

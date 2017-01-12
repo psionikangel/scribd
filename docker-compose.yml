@@ -1,0 +1,18 @@
+ version: '2'
+ services:
+   scribd:
+     build: .
+     ports:
+      - "8080:8080"
+     volumes:
+      - .:/go/src/app
+     links:
+      - postgres
+   postgres:
+     image: postgres
+     environment:
+      - POSTGRES_PASSWORD=c0g1n0v
+      - POSTGRES_USER=scribd
+     volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./sqlinit:/docker-entrypoint-initdb.d

@@ -10,4 +10,5 @@ type Metadata struct {
 	Filename     string
 	Extension    string
 	Checksum     string
+	RunID        string
 }
