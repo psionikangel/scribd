@@ -15,7 +15,7 @@ create table metadata (
   filename text,
   filesize int,
   extension text,
-  runid varchar(100) references run(runid)
+  runid varchar(100)
 );
 
 commit;
