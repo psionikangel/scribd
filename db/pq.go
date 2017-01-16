@@ -69,3 +69,24 @@ func AddMetadata(m models.Metadata) {
 		panic(err)
 	}
 }
+
+//FetchMetadataPerRun : Returns all the metadata for a single run
+func FetchMetadataPerRun(runid string) *models.MetadataList {
+	client := getPQClient()
+	defer client.Close()
+	rows, err := client.Query(`select path, filesize, lastmodified, filename, extension, checksum from metadata where runid = $1;`, runid)
+	if err != nil {
+		panic(err)
+	}
+	metas := new(models.MetadataList)
+	defer rows.Close()
+	for rows.Next() {
+		meta := new(models.Metadata)
+		err := rows.Scan(&meta.Path, &meta.Filesize, &meta.LastModified, &meta.Filename, &meta.Extension, &meta.Checksum)
+		if err != nil {
+			panic(err)
+		}
+		metas.Meta = append(metas.Meta, *meta)
+	}
+	return metas
+}

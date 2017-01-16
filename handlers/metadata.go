@@ -28,6 +28,15 @@ func MetadataHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(string(js))
 		w.Header().Set("Content-type", "application/json")
 		w.Write(js)
+	} else if r.Method == "GET" {
+		runid := r.URL.Query().Get("runid")
+		metas := db.FetchMetadataPerRun(runid)
+		js, err := json.Marshal(metas)
+		if err != nil {
+			panic(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
 	} else {
 		http.Error(w, "", http.StatusMethodNotAllowed)
 	}

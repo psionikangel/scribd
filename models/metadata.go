@@ -12,3 +12,8 @@ type Metadata struct {
 	Checksum     string
 	RunID        string
 }
+
+//MetadataList : A list of metadata
+type MetadataList struct {
+	Meta []Metadata
+}
