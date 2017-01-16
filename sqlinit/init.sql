@@ -10,7 +10,7 @@ create table run(
 create table metadata (
   id serial,
   filepath text,
-  lastmodified date,
+  lastmodified timestamp,
   checksum varchar(256),
   filename text,
   filesize int,
