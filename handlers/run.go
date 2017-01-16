@@ -10,6 +10,15 @@ import (
 
 //RunHandler : Enables the creation and update of runs
 func RunHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		runs := db.GetAllRuns()
+		js, err := json.Marshal(runs)
+		if err != nil {
+			panic(err)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
+	}
 	var run models.Run
 	dec := json.NewDecoder(r.Body)
 	err := dec.Decode(&run)

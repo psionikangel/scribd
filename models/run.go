@@ -9,3 +9,8 @@ type Run struct {
 	Start       time.Time
 	End         time.Time
 }
+
+//Runlist : A list of runs
+type Runlist struct {
+	Runs []Run
+}

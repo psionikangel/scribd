@@ -26,6 +26,27 @@ func NewRun(r models.Run) {
 	}
 }
 
+//GetAllRuns : Returns a list of all the runs collected by the server
+func GetAllRuns() *models.Runlist {
+	client := getPQClient()
+	defer client.Close()
+	rows, err := client.Query(`select runid, starttime, endtime, machinename from run;`)
+	if err != nil {
+		panic(err)
+	}
+	list := new(models.Runlist)
+	defer rows.Close()
+	for rows.Next() {
+		run := new(models.Run)
+		err := rows.Scan(&run.ID, &run.Start, &run.End, &run.Machinename)
+		list.Runs = append(list.Runs, *run)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return list
+}
+
 //EndRun : Ends a run by updating the end time
 func EndRun(r models.Run) {
 	client := getPQClient()
