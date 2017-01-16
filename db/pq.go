@@ -74,7 +74,7 @@ func AddMetadata(m models.Metadata) {
 func FetchMetadataPerRun(runid string) *models.MetadataList {
 	client := getPQClient()
 	defer client.Close()
-	rows, err := client.Query(`select path, filesize, lastmodified, filename, extension, checksum from metadata where runid = $1;`, runid)
+	rows, err := client.Query(`select filepath, filesize, lastmodified, filename, extension, checksum from metadata where runid = $1;`, runid)
 	if err != nil {
 		panic(err)
 	}
