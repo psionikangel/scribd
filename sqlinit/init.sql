@@ -2,8 +2,8 @@
 create table run(
   id serial,
   runid varchar(100),
-  starttime date,
-  endtime date,
+  starttime timestamp,
+  endtime timestamp,
   machinename text
 );
 
