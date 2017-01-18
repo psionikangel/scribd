@@ -30,7 +30,7 @@ func NewRun(r models.Run) {
 func GetAllRuns() *models.Runlist {
 	client := getPQClient()
 	defer client.Close()
-	rows, err := client.Query(`select runid, starttime, endtime, machinename, filescount from run group by machinename order by starttime desc;`)
+	rows, err := client.Query(`select runid, starttime, endtime, machinename, filescount from run order by machinename asc, starttime desc;`)
 	if err != nil {
 		panic(err)
 	}
