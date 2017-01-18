@@ -4,7 +4,8 @@ create table run(
   runid varchar(100),
   starttime timestamp,
   endtime timestamp,
-  machinename text
+  machinename text,
+  filescount bigint
 );
 
 create table metadata (

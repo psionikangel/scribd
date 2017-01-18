@@ -52,7 +52,7 @@ func EndRun(r models.Run) {
 	client := getPQClient()
 	defer client.Close()
 	var lastUpdatedID string
-	err := client.QueryRow(`update run set endtime = $1 where runid = $2 returning id;`, r.End, r.ID).Scan(&lastUpdatedID)
+	err := client.QueryRow(`update run set endtime = $1, filescount = $2 where runid = $3 returning id;`, r.End, r.FilesCount, r.ID).Scan(&lastUpdatedID)
 	if err != nil {
 		panic(err)
 	}
