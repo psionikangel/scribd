@@ -95,8 +95,7 @@ func FetchMetadataPerRun(runid string) *models.MetadataList {
 func FetchDuplicatesPerRun(runid string) *models.MetadataList {
 	client := getPQClient()
 	defer client.Close()
-	rows, err := client.Query(
-		`select filepath, lastmodified, metadata.checksum, filename, filesize, extension, runid, numOcc
+	rows, err := client.Query(`select filepath, lastmodified, metadata.checksum, filename, filesize, extension, runid, numOcc
 			from metadata inner join
 				(select checksum, count(checksum) as numOcc
  					from metadata
