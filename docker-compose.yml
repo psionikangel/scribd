@@ -10,6 +10,8 @@
       - postgres
    postgres:
      image: postgres
+     ports:
+       - "5432:5432" # Remove before deploying these images (this opens the 5432 port to the outside)
      environment:
       - POSTGRES_PASSWORD=c0g1n0v
       - POSTGRES_USER=scribd

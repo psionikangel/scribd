@@ -90,3 +90,35 @@ func FetchMetadataPerRun(runid string) *models.MetadataList {
 	}
 	return metas
 }
+
+//FetchDuplicatesPerRun : Returns all duplicates files found in a given run
+func FetchDuplicatesPerRun(runid string) *models.MetadataList {
+	client := getPQClient()
+	defer client.Close()
+	rows, err := client.Query(
+		`select filepath, lastmodified, metadata.checksum, filename, filesize, extension, runid, numOcc
+			from metadata inner join
+				(select checksum, count(checksum) as numOcc
+ 					from metadata
+ 					where runid = '$1'
+ 					group by checksum
+ 					having (count(checksum) > 1 )
+				) as duplicates
+			on metadata.checksum = duplicates.checksum
+			where runid = '$1' and metadata.checksum != ''
+			order by checksum asc;`, runid)
+	if err != nil {
+		panic(err)
+	}
+	metas := new(models.MetadataList)
+	defer rows.Close()
+	for rows.Next() {
+		meta := new(models.Metadata)
+		err := rows.Scan(&meta.Path, &meta.LastModified, &meta.Checksum, &meta.Filename, &meta.Filesize, &meta.Extension)
+		if err != nil {
+			panic(err)
+		}
+		metas.Meta = append(metas.Meta, *meta)
+	}
+	return metas
+}
