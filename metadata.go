@@ -1,25 +1,39 @@
-package handlers
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/psionikangel/scribd/db"
-	"github.com/psionikangel/scribd/models"
+	"time"
 )
+
+//Metadata : A file's metadata
+type Metadata struct {
+	Path         string
+	Filesize     int64
+	LastModified time.Time
+	Filename     string
+	Extension    string
+	Checksum     string
+	RunID        string
+}
+
+//MetadataList : A list of metadata
+type MetadataList struct {
+	Meta []Metadata
+}
 
 //MetadataHandler : Receives metadata requests
 func MetadataHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
-		var meta []models.Metadata
+		var meta []Metadata
 		dec := json.NewDecoder(r.Body)
 		err := dec.Decode(&meta)
 		if err != nil {
 			panic(err)
 		}
 		for _, metadata := range meta {
-			db.AddMetadata(metadata)
+			AddMetadata(metadata)
 		}
 		js, err := json.Marshal(meta)
 		if err != nil {
@@ -30,7 +44,7 @@ func MetadataHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(js)
 	} else if r.Method == "GET" {
 		runid := r.URL.Query().Get("runid")
-		metas := db.FetchMetadataPerRun(runid)
+		metas := FetchMetadataPerRun(runid)
 		js, err := json.Marshal(metas)
 		if err != nil {
 			panic(err)

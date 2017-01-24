@@ -2,13 +2,11 @@ package main
 
 import (
 	"net/http"
-
-	"github.com/psionikangel/scribd/handlers"
 )
 
 func main() {
-	http.HandleFunc("/run", handlers.RunHandler)
-	http.HandleFunc("/metadata", handlers.MetadataHandler)
-	http.HandleFunc("/analysis", handlers.AnalysisHandler)
+	http.HandleFunc("/run", RunHandler)
+	http.HandleFunc("/metadata", MetadataHandler)
+	http.HandleFunc("/analysis", AnalysisHandler)
 	http.ListenAndServe(":8080", nil)
 }

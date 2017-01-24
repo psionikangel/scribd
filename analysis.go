@@ -1,17 +1,15 @@
-package handlers
+package main
 
 import (
 	"encoding/json"
 	"net/http"
-
-	"github.com/psionikangel/scribd/db"
 )
 
 //AnalysisHandler : Receives analysis requests
 func AnalysisHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		runid := r.URL.Query().Get("runid")
-		metas := db.FetchDuplicatesPerRun(runid)
+		metas := FetchDuplicatesPerRun(runid)
 		js, err := json.Marshal(metas)
 		if err != nil {
 			panic(err)

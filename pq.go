@@ -1,10 +1,9 @@
-package db
+package main
 
 import (
 	"database/sql"
 
 	_ "github.com/lib/pq" //pq lib will register itself against std lib package
-	"github.com/psionikangel/scribd/models"
 )
 
 func getPQClient() *sql.DB {
@@ -16,7 +15,7 @@ func getPQClient() *sql.DB {
 }
 
 //NewRun : Inserts a new run that is starting
-func NewRun(r models.Run) {
+func NewRun(r Run) {
 	client := getPQClient()
 	defer client.Close()
 	var lastInsertedID string
@@ -27,17 +26,17 @@ func NewRun(r models.Run) {
 }
 
 //GetAllRuns : Returns a list of all the runs collected by the server
-func GetAllRuns() *models.Runlist {
+func GetAllRuns() *Runlist {
 	client := getPQClient()
 	defer client.Close()
 	rows, err := client.Query(`select runid, starttime, endtime, machinename, filescount from run order by machinename asc, starttime desc;`)
 	if err != nil {
 		panic(err)
 	}
-	list := new(models.Runlist)
+	list := new(Runlist)
 	defer rows.Close()
 	for rows.Next() {
-		run := new(models.Run)
+		run := new(Run)
 		err := rows.Scan(&run.ID, &run.Start, &run.End, &run.Machinename, &run.FilesCount)
 		list.Runs = append(list.Runs, *run)
 		if err != nil {
@@ -48,7 +47,7 @@ func GetAllRuns() *models.Runlist {
 }
 
 //EndRun : Ends a run by updating the end time
-func EndRun(r models.Run) {
+func EndRun(r Run) {
 	client := getPQClient()
 	defer client.Close()
 	var lastUpdatedID string
@@ -59,7 +58,7 @@ func EndRun(r models.Run) {
 }
 
 //AddMetadata : Adds a row of metadata from a run
-func AddMetadata(m models.Metadata) {
+func AddMetadata(m Metadata) {
 	client := getPQClient()
 	defer client.Close()
 	var lastInsertedID string
@@ -71,17 +70,17 @@ func AddMetadata(m models.Metadata) {
 }
 
 //FetchMetadataPerRun : Returns all the metadata for a single run
-func FetchMetadataPerRun(runid string) *models.MetadataList {
+func FetchMetadataPerRun(runid string) *MetadataList {
 	client := getPQClient()
 	defer client.Close()
 	rows, err := client.Query(`select filepath, filesize, lastmodified, filename, extension, checksum from metadata where runid = $1;`, runid)
 	if err != nil {
 		panic(err)
 	}
-	metas := new(models.MetadataList)
+	metas := new(MetadataList)
 	defer rows.Close()
 	for rows.Next() {
-		meta := new(models.Metadata)
+		meta := new(Metadata)
 		err := rows.Scan(&meta.Path, &meta.Filesize, &meta.LastModified, &meta.Filename, &meta.Extension, &meta.Checksum)
 		if err != nil {
 			panic(err)
@@ -92,7 +91,7 @@ func FetchMetadataPerRun(runid string) *models.MetadataList {
 }
 
 //FetchDuplicatesPerRun : Returns all duplicates files found in a given run
-func FetchDuplicatesPerRun(runid string) *models.MetadataList {
+func FetchDuplicatesPerRun(runid string) *MetadataList {
 	client := getPQClient()
 	defer client.Close()
 	rows, err := client.Query(`select filepath, lastmodified, metadata.checksum, filename, filesize, extension
@@ -107,10 +106,10 @@ func FetchDuplicatesPerRun(runid string) *models.MetadataList {
 	if err != nil {
 		panic(err)
 	}
-	metas := new(models.MetadataList)
+	metas := new(MetadataList)
 	defer rows.Close()
 	for rows.Next() {
-		meta := new(models.Metadata)
+		meta := new(Metadata)
 		err := rows.Scan(&meta.Path, &meta.LastModified, &meta.Checksum, &meta.Filename, &meta.Filesize, &meta.Extension)
 		if err != nil {
 			panic(err)
